@@ -40,20 +40,20 @@ export class Tree {
     }
     insertion(this.root)
   }
-  
-  deleteNode(node, value) {
-    if (node === null) return null
 
-    if (value > node.data) {
+  deleteNode(node, value) {
+    if(node === null) return null
+
+    if(value > node.data) {
       node.right = this.deleteNode(node.right, value)
-    } else if (value < node.data) {
+    } else if(value < node.data) {
       node.left = this.deleteNode(node.left, value)
     } else {
-      if (node.left === null && node.right === null) { // IsLeaf
+      if(node.left === null && node.right === null) { // IsLeaf
         return null
-      } else if (node.left === null) { // HasOneChild
+      } else if(node.left === null) { // HasOneChild
         return node.right
-      } else if (node.right === null) { // HasOneChild
+      } else if(node.right === null) { // HasOneChild
         return node.left
       } else { // HasTwoChild
         let temporary = this._findSmaller(node.right)
@@ -63,7 +63,7 @@ export class Tree {
     }
     return node
   }
-  
+
   _findSmaller(node) {
     while(node.left !== null) {
       node = node.left
@@ -71,10 +71,100 @@ export class Tree {
     return node
   }
 
-  find(value, node) {
+  find(node, value) {
     if(node === null) return null
     if(value > node.data) return this.find(value, node.right)
     if(value < node.data) return this.find(value, node.left)
     if(value === node.data) return node
+  }
+
+  levelOrder(callback) {
+    let queue = [this.root]
+    let queueCopy = []
+    while(queue.length > 0) {
+      if(queue[0].left !== null) {
+        queue.push(queue[0].left)
+      }
+      if(queue[0].right !== null) {
+        queue.push(queue[0].right)
+      }
+      if(typeof callback === 'function') {
+        callback(queue[0])
+      } else {
+        queueCopy.push(queue[0].data)
+      }
+      queue.shift()
+    }
+    if(typeof callback !== 'function') return queueCopy
+  }
+
+  preorder(node, callback) {
+    if(node === null) return
+    callback(node)
+    this.preorder(node.left, callback)
+    this.preorder(node.right, callback)
+  }
+
+  inorder(node, callback) {
+    if(node === null) return
+    this.inorder(node.left, callback)
+    if (typeof callback === 'function') {
+      callback(node)
+    } else if (Array.isArray(callback)) {
+      callback.push(node.data)
+    }
+    this.inorder(node.right, callback)
+  }
+
+  postorder(node, callback) {
+    if(node === null) return
+    this.postorder(node.left, callback)
+    this.postorder(node.right, callback)
+    callback(node)
+  }
+
+  height(node) {
+    if(node === null) return 0
+    let leftHeight = this.height(node.left)
+    let rightHeight = this.height(node.right)
+    return this._max(leftHeight, rightHeight) + 1
+  }
+  _max(leftHeight, rightHeight) {
+    return (leftHeight >= rightHeight) ? leftHeight : rightHeight
+  }
+
+  depth(value) {
+    let node = this.root
+    let depth = 1;
+    while(node !== null) {
+      if (node.data === value) return depth
+      if (node.data > value) {
+        node = node.left
+      } else {
+        node = node.right
+      }
+      depth++
+    }
+    return null
+  }
+  
+  isBalanced(node) {
+    if (node === null) return true
+    let left = this.height(node.left)
+    let right = this.height(node.right)
+    if (
+      (Math.abs(left - right) <= 1)
+      && this.isBalanced(node.left)
+      && this.isBalanced(node.right)
+    ) {
+      return true
+    }
+    return false
+  }
+  
+  rebalance() {
+    let array = []
+    this.inorder(this.root, array)
+    this.root = this.buildTree(array, 0, array.length - 1)
   }
 }
