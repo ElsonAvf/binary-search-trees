@@ -28,7 +28,7 @@ export class Tree {
       this.root = new Node(value)
       return
     }
-    function insertion(node) {
+    function insertion(node = this.root) {
       if(value > node.data && node.right === null) {
         node.right = new Node(value)
         return
@@ -46,7 +46,7 @@ export class Tree {
     insertion(this.root)
   }
 
-  deleteNode(node, value) {
+  deleteNode(value, node = this.root) {
     if(node === null) return null
 
     if(value > node.data) {
@@ -76,7 +76,7 @@ export class Tree {
     return node
   }
 
-  find(node, value) {
+  find(value, node = this.root) {
     if(node === null) return null
     if(value > node.data) return this.find(value, node.right)
     if(value < node.data) return this.find(value, node.left)
@@ -103,14 +103,14 @@ export class Tree {
     if(typeof callback !== 'function') return queueCopy
   }
 
-  preorder(node, callback) {
+  preorder(callback, node = this.root) {
     if(node === null) return
     callback(node)
     this.preorder(node.left, callback)
     this.preorder(node.right, callback)
   }
 
-  inorder(node, callback) {
+  inorder(callback, node = this.root) {
     if(node === null) return
     this.inorder(node.left, callback)
     if (typeof callback === 'function') {
@@ -121,14 +121,14 @@ export class Tree {
     this.inorder(node.right, callback)
   }
 
-  postorder(node, callback) {
+  postorder(callback, node = this.root) {
     if(node === null) return
     this.postorder(node.left, callback)
     this.postorder(node.right, callback)
     callback(node)
   }
 
-  height(node) {
+  height(node = this.root) {
     if(node === null) return 0
     let leftHeight = this.height(node.left)
     let rightHeight = this.height(node.right)
@@ -153,7 +153,7 @@ export class Tree {
     return null
   }
   
-  isBalanced(node) {
+  isBalanced(node = this.root) {
     if (node === null) return true
     let left = this.height(node.left)
     let right = this.height(node.right)

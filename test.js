@@ -25,16 +25,6 @@ const populate = () => {
   return array
 }
 
-let sorted = mergeSort(populate())
-let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+let array = [2, 3, 4, 5, 6, 7]
 let tree = new Tree(array)
-tree.insert(16)
-tree.insert(17)
-tree.insert(18)
-tree.insert(19)
 prettyPrint(tree.root)
-
-if (!tree.isBalanced(tree.root)) {
-  tree.rebalance()
-  prettyPrint(tree.root)
-}
