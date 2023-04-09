@@ -2,9 +2,14 @@ import Node from './Node.js';
 
 export class Tree {
   constructor(array) {
+    this._sortedAndRemoveDuplicate = [...new Set(array)].sort((a, b) => a - b)
     this.root =
-      (array !== undefined && array.length > 0)
-        ? this.buildTree(array, 0, array.length - 1)
+      (Array.isArray(array) && array.length > 0)
+        ? this.buildTree(
+          this._sortedAndRemoveDuplicate,
+          0,
+          this._sortedAndRemoveDuplicate.length - 1
+        )
         : null;
   }
 
